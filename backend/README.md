@@ -1,0 +1,1 @@
+Backend placeholder – will be implemented later in Python (FastAPI). 
