@@ -10,6 +10,3 @@ dependencies = [
     "supabase>=2.18.0",
     "yt-dlp>=2025.8.11",
 ]
-
-[tool.pytest.ini_options]
-pythonpath = ["src"]

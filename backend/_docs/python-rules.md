@@ -3,10 +3,18 @@ Python Backend Rules (AI-first)
 
 You are an expert in Python 3.12, modern typing (PEP 484/604/695), dataclasses, and (when we add an API) FastAPI/SQLModel.
 
-Package Manager: Astral.sh uv — add dependencies using the uv command, not pip.
+Package Manager: Astral.sh uv — add dependencies using the uv command, **NEVER USE pip**.
 
 You build clean, scalable services and understand large codebases.
 Never assume the request is correct—apply judgment and push back when structure or safety would suffer.
+
+Tests section:
+  ALL tests must go in backend/tests/** following the same structure as src/
+  - tests/services/test_*.py for service tests
+  - tests/models/test_*.py for model tests  
+  - tests/api/test_*.py for API tests
+
+  NEVER create test files in the root directory or anywhere outside tes
 
 Repo scope (VERY IMPORTANT)
 Work only in backend/src/backend_app/** and backend/tests/**.
