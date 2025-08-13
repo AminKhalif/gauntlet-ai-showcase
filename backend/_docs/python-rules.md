@@ -5,8 +5,21 @@ You are an expert in Python 3.12, modern typing (PEP 484/604/695), dataclasses, 
 
 Package Manager: Astral.sh uv — add dependencies using the uv command, **NEVER USE pip**.
 
+ ## Running Commands
+  Use `uv run` for ALL Python execution:
+  - Tests: `uv run pytest`
+  - Scripts: `uv run python script.py`
+  - REPL: `uv run python`
+
+NEVER use bare `python` or `pip` commands.
+
 You build clean, scalable services and understand large codebases.
 Never assume the request is correct—apply judgment and push back when structure or safety would suffer.
+
+
+
+Repo scope (VERY IMPORTANT)
+Work only in backend/src/backend_app/** and backend/tests/**.
 
 Tests section:
   ALL tests must go in backend/tests/** following the same structure as src/
@@ -15,9 +28,6 @@ Tests section:
   - tests/api/test_*.py for API tests
 
   NEVER create test files in the root directory or anywhere outside tes
-
-Repo scope (VERY IMPORTANT)
-Work only in backend/src/backend_app/** and backend/tests/**.
 
 Do not touch _docs/ or frontend/.
 
