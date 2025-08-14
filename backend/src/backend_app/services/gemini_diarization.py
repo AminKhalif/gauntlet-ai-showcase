@@ -63,6 +63,57 @@ def wait_for_file_processing(
     raise TimeoutError(f"File {file_name} did not become ACTIVE within {max_wait_seconds} seconds")
 
 
+def inspect_empty_response(response: Any) -> str:
+    """Inspect empty response from Gemini to provide diagnostic information.
+    
+    Args:
+        response: Gemini API response object
+        
+    Returns:
+        Diagnostic string with response details for error messages
+    """
+    details = []
+    
+    # Check finish reason
+    finish_reason = getattr(response, 'finish_reason', 'UNKNOWN')
+    details.append(f"finish_reason='{finish_reason}'")
+    
+    # Check candidates
+    candidates = getattr(response, 'candidates', [])
+    details.append(f"candidates_count={len(candidates)}")
+    
+    if candidates:
+        candidate = candidates[0]
+        # Check if candidate has content
+        content = getattr(candidate, 'content', None)
+        if content:
+            parts = getattr(content, 'parts', None)
+            if parts is not None:
+                details.append(f"content_parts={len(parts)}")
+            else:
+                details.append("content_parts=None")
+        
+        # Check for safety ratings or finish reason on candidate
+        candidate_finish_reason = getattr(candidate, 'finish_reason', None)
+        if candidate_finish_reason:
+            details.append(f"candidate_finish_reason='{candidate_finish_reason}'")
+            
+        safety_ratings = getattr(candidate, 'safety_ratings', [])
+        if safety_ratings:
+            blocked_ratings = [r for r in safety_ratings if getattr(r, 'blocked', False)]
+            if blocked_ratings:
+                details.append(f"safety_blocked={len(blocked_ratings)}")
+    
+    # Check for usage metadata
+    usage_metadata = getattr(response, 'usage_metadata', None)
+    if usage_metadata:
+        input_tokens = getattr(usage_metadata, 'prompt_token_count', 0)
+        output_tokens = getattr(usage_metadata, 'candidates_token_count', 0)
+        details.append(f"tokens_in={input_tokens},out={output_tokens}")
+    
+    return " | ".join(details)
+
+
 def upload_audio_to_gemini(file_path: str, display_name: Optional[str] = None) -> Any:
     """Upload audio file to Gemini Files API.
     
@@ -144,13 +195,14 @@ Focus on accuracy and maintaining consistent speaker roles throughout the conver
             if response.text and response.text.strip():
                 return response.text
             
-            # Empty response - retry if attempts remaining
+            # Empty response - inspect and retry if attempts remaining
+            diagnostics = inspect_empty_response(response)
             if attempt < max_retries:
                 wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
                 time.sleep(wait_time)
                 continue
             else:
-                raise ValueError("No transcript generated from audio after retries")
+                raise ValueError(f"No transcript generated from audio after retries. Response details: {diagnostics}")
                 
         except Exception as e:
             last_exception = e

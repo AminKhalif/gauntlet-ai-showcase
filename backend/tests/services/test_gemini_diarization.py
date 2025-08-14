@@ -32,20 +32,16 @@ def test_process_podcast_for_role_diarization_integration():
     # Output transcript to downloads folder as requested
     output_transcript_path = "tests/downloads/transcript.txt"
     
-    # Skip test if audio file doesn't exist (for CI/CD or fresh clones)
+    # Skip test if audio file doesn't exist (per downloads/README.md guidance)
     if not os.path.exists(audio_file_path):
-        # Note: You can download the audio file using our YouTube downloader:
-        # from backend_app.services.youtube_downloader import download_audio
-        # download_audio("https://youtube.com/watch?v=...", "tests/downloads")
-        print(f"Skipping test: Audio file not found at {audio_file_path}")
-        print("To run this test:")
-        print("1. Use our YouTube downloader to get the podcast MP3")
-        print("2. Or place any ~1 hour audio file in tests/downloads/")
+        # Tests gracefully handle missing audio files as per downloads README
+        # To run this test: use youtube_downloader.py or add your own ~1 hour audio file
+        pytest.skip("Audio file not found - see tests/downloads/README.md for setup instructions")
         return
     
     # Verify GEMINI_API_KEY is available
     if not os.getenv("GEMINI_API_KEY"):
-        print("Skipping test: GEMINI_API_KEY environment variable not set")
+        pytest.skip("GEMINI_API_KEY environment variable not set")
         return
     
     try:
