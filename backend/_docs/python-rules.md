@@ -65,6 +65,8 @@ No print() in business logic—return values or raise; (logging can be added lat
 
 Avoid Enums unless you need real enum semantics; otherwise use Literal[...] or constants.
 
+Comments: Add helpful comments that explain WHY or provide context. Avoid redundant comments that just restate the code. Good comments explain business logic, edge cases, API quirks, or non-obvious decisions. Avoid implementation details that are already clear from the code.
+
 Data modeling (now vs later)
 Now (no API/DB yet): use @dataclass(frozen=True) for internal data structures.
 

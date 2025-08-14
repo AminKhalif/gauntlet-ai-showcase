@@ -29,7 +29,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
 # backend downloads
 backend/tests/downloads/*.mp3
 backend/tests/downloads/*.mp4
 backend/tests/downloads/*.webm
+backend/tests/downloads/*.txt
