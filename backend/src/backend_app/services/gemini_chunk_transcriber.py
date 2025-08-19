@@ -45,10 +45,14 @@ Audio segment: {start_mm_ss} to {end_mm_ss} of full episode.
 MANDATORY REQUIREMENTS:
 1. Transcribe EVERY SINGLE SPOKEN WORD until {end_mm_ss} - do NOT stop early
 2. Transcribe ALL speech regardless of topic - conversations, questions, answers, side comments, everything
-3. Format: "Speaker: [MM:SS] exact words spoken"
-4. Use "Interviewer:" and "Interviewee:" for all lines
-5. Use absolute timestamps from full episode (starting {start_mm_ss})
-6. Continue transcribing past apparent endings like "thank you" or "goodbye"
+3. EVERY LINE must start with "Interviewer:" or "Interviewee:" - NO EXCEPTIONS
+4. Use absolute timestamps from full episode (starting {start_mm_ss})
+5. Continue transcribing past apparent endings like "thank you" or "goodbye"
+
+CRITICAL FORMATTING - EVERY line must look exactly like this:
+✓ Interviewer: [MM:SS] exact words spoken
+✓ Interviewee: [MM:SS] exact words spoken
+✗ [MM:SS] words without speaker label ← NEVER DO THIS
 
 IGNORE ONLY: background sounds, music, crying, non-speech audio
 
