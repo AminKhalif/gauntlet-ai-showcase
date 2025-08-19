@@ -32,7 +32,7 @@ async def test_transcript_generation():
         pytest.skip("No chunk files found - run full pipeline test first")
     
     # Test transcription on ALL chunks CONCURRENTLY (like real pipeline)
-    max_concurrent = 6
+    max_concurrent = 5
     semaphore = asyncio.Semaphore(max_concurrent)
     
     async def process_single_chunk(i, chunk_timestamp, chunk_file):
