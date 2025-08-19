@@ -1,10 +1,15 @@
-"""Pure audio chunk processing service."""
+"""Plans optimal audio chunks and creates chunk files for parallel processing.
+
+Takes: Audio file path and chunking parameters
+Outputs: List of ChunkTimestamp objects and created audio chunk files
+Used by: full_transcript_orchestrator.py to prepare audio for parallel transcription
+"""
 
 from pathlib import Path
 from typing import List
 
 from backend_app.models.audio_chunker_models import ChunkTimestamp
-from backend_app.services.audio_chunker import (
+from backend_app.services.ffmpeg_audio_splitter import (
     get_audio_duration_seconds,
     calculate_chunk_timestamps,
     create_audio_chunk

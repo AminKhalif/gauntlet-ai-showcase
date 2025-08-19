@@ -1,4 +1,9 @@
-"""Audio chunking service for processing large audio files."""
+"""Splits large audio files into overlapping chunks using FFmpeg.
+
+Takes: Full audio file (.mp3) and chunk parameters
+Outputs: Multiple smaller audio chunk files with 30-second overlaps
+Used by: audio_chunk_planner.py for creating processable audio segments
+"""
 
 import os
 import subprocess

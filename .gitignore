@@ -35,3 +35,7 @@ backend/tests/downloads/*.mp3
 backend/tests/downloads/*.mp4
 backend/tests/downloads/*.webm
 backend/tests/downloads/*.txt
+backend/tests/downloads/chunks/*.mp3
+backend/tests/downloads/chunks/*.txt
+
+#claude settings

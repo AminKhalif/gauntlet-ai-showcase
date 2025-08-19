@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 sys.path.append('src')
-from backend_app.services.gemini_diarization import (
+from backend_app.services.gemini_api_client import (
     get_gemini_client,
     upload_audio_to_gemini,
     generate_role_aware_transcript,

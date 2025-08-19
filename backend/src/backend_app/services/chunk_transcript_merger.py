@@ -1,9 +1,12 @@
-"""Service for merging overlapping transcript chunks."""
+"""Merges overlapping transcript chunks into final continuous transcript.
+
+Takes: List of individual transcript results from chunks
+Outputs: Single merged transcript with duplicate content removed
+Pipeline: Handle overlaps → Remove backwards timestamps → Validate completeness
+"""
 
 import re
 from typing import List, Optional, Tuple
-
-from backend_app.services.transcript_service import TranscriptResult
 
 
 def extract_timestamp_seconds(line: str) -> Optional[int]:
@@ -22,8 +25,25 @@ def extract_timestamp_seconds(line: str) -> Optional[int]:
     return None
 
 
-def merge_transcript_chunks(
-    transcript_results: List[TranscriptResult],
+def get_last_timestamp_from_transcript(transcript_text: str) -> Optional[int]:
+    """Get the last timestamp from a transcript text.
+    
+    Args:
+        transcript_text: Transcript content with timestamps
+        
+    Returns:
+        Last timestamp in seconds, or None if no timestamps found
+    """
+    lines = transcript_text.strip().split('\n')
+    for line in reversed(lines):
+        timestamp = extract_timestamp_seconds(line)
+        if timestamp is not None:
+            return timestamp
+    return None
+
+
+def merge_chunk_transcripts(
+    transcript_results,
     tolerance_seconds: int = 2
 ) -> str:
     """Merge overlapping transcript chunks into final transcript.
@@ -52,9 +72,12 @@ def merge_transcript_chunks(
             # First chunk: add all lines
             merged_lines.extend(lines)
         else:
-            # Subsequent chunks: drop overlapping lines
-            prev_result_end = sorted_results[i-1].end_seconds
-            cutoff_time = prev_result_end - tolerance_seconds
+            # Find the actual last timestamp from previous chunk's transcript
+            prev_transcript = sorted_results[i-1].transcript_text
+            last_timestamp = get_last_timestamp_from_transcript(prev_transcript)
+            
+            # Use the actual last timestamp + tolerance as cutoff
+            cutoff_time = last_timestamp + tolerance_seconds if last_timestamp is not None else 0
             
             for line in lines:
                 line_timestamp = extract_timestamp_seconds(line)
@@ -128,7 +151,7 @@ def validate_transcript_completeness(
 
 
 def process_transcript_merge(
-    transcript_results: List[TranscriptResult],
+    transcript_results,
     expected_duration_seconds: int
 ) -> str:
     """Complete transcript merge with validation.
@@ -144,7 +167,7 @@ def process_transcript_merge(
         ValueError: If merge fails or validation fails
     """
     # Merge overlapping chunks
-    merged_transcript = merge_transcript_chunks(transcript_results)
+    merged_transcript = merge_chunk_transcripts(transcript_results)
     
     # Remove backwards timestamps
     validated_transcript = remove_backwards_timestamps(merged_transcript)
@@ -157,3 +180,5 @@ def process_transcript_merge(
         raise ValueError(f"Transcript validation failed: {validation_msg}")
     
     return validated_transcript
+
+

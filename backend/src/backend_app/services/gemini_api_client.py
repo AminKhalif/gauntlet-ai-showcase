@@ -1,4 +1,9 @@
-"""Gemini API service for role-aware audio diarization using Files API."""
+"""Basic Gemini API client utilities for file upload and processing.
+
+Takes: Audio files for upload to Gemini Files API
+Outputs: Uploaded file handles and API client instances
+Used by: gemini_chunk_transcriber.py for individual chunk processing
+"""
 
 import os
 import time
@@ -63,8 +68,8 @@ def wait_for_file_processing(
     raise TimeoutError(f"File {file_name} did not become ACTIVE within {max_wait_seconds} seconds")
 
 
-def inspect_empty_response(response: Any) -> str:
-    """Inspect empty response from Gemini to provide diagnostic information.
+def inspect_gemini_response(response: Any) -> str:
+    """Inspect Gemini response to provide diagnostic information for debugging.
     
     Args:
         response: Gemini API response object
@@ -143,121 +148,5 @@ def upload_audio_to_gemini(file_path: str, display_name: Optional[str] = None) -
         raise ValueError(f"Failed to upload audio file to Gemini: {e}")
 
 
-def generate_role_aware_transcript(uploaded_file: Any, max_retries: int = 2) -> str:
-    """Generate role-aware diarized transcript from uploaded audio file.
-    
-    Args:
-        uploaded_file: Gemini File object representing the uploaded audio
-        max_retries: Maximum number of retries for empty responses
-        
-    Returns:
-        Role-aware diarized transcript as a string
-        
-    Raises:
-        ValueError: If transcript generation fails after retries
-    """
-    client = get_gemini_client()
-    
-    # Prompt for role-aware diarized transcription
-    prompt = """Please transcribe this podcast audio and provide a role-aware diarized transcript. 
-
-This is a podcast interview between two speakers:
-- An INTERVIEWER who asks questions
-- An INTERVIEWEE (builder/developer) who explains their AI workflow and development techniques
-
-Your task:
-1. Use both voice characteristics AND content analysis to identify speakers
-2. Label each segment as either "Interviewer:" or "Interviewee:" 
-3. Maintain consistent labeling throughout the entire episode
-4. Include timestamps in [MM:SS] format
-
-Analysis guidelines:
-- The INTERVIEWER typically asks questions, guides conversation, introduces topics
-- The INTERVIEWEE typically provides detailed technical explanations, describes their workflow, explains tools and techniques
-- Use voice characteristics to distinguish speakers, but prioritize conversational role consistency
-
-Format:
-Interviewer: [MM:SS] [question or guidance text]
-Interviewee: [MM:SS] [technical explanation or answer]
-
-Focus on accuracy and maintaining consistent speaker roles throughout the conversation."""
-    
-    last_exception = None
-    
-    for attempt in range(max_retries + 1):
-        try:
-            # Generate content using new SDK
-            response = client.models.generate_content(
-                model="gemini-2.5-pro",
-                contents=[prompt, uploaded_file]
-            )
-            
-            if response.text and response.text.strip():
-                return response.text
-            
-            # Empty response - inspect and retry if attempts remaining
-            diagnostics = inspect_empty_response(response)
-            if attempt < max_retries:
-                wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
-                time.sleep(wait_time)
-                continue
-            else:
-                raise ValueError(f"No transcript generated from audio after retries. Response details: {diagnostics}")
-                
-        except Exception as e:
-            last_exception = e
-            if attempt < max_retries:
-                wait_time = 2 ** attempt
-                time.sleep(wait_time)
-                continue
-            else:
-                raise ValueError(f"Failed to generate role-aware transcript: {e}")
 
 
-def process_podcast_for_role_diarization(
-    audio_file_path: str, 
-    output_file_path: str,
-    display_name: Optional[str] = None
-) -> str:
-    """Complete pipeline: upload podcast to Gemini and generate role-aware diarized transcript.
-    
-    Args:
-        audio_file_path: Path to the input podcast audio file
-        output_file_path: Path where the transcript should be saved
-        display_name: Optional display name for the uploaded file
-        
-    Returns:
-        Path to the saved transcript file
-        
-    Raises:
-        FileNotFoundError: If audio file doesn't exist
-        ValueError: If processing fails
-    """
-    # Upload audio file
-    uploaded_file = upload_audio_to_gemini(audio_file_path, display_name)
-    
-    try:
-        # Wait for file processing before using it
-        client = get_gemini_client()
-        wait_for_file_processing(client, uploaded_file.name)
-        
-        # Generate role-aware diarized transcript
-        transcript = generate_role_aware_transcript(uploaded_file)
-        
-        # Save transcript to file
-        output_path = Path(output_file_path)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(transcript)
-        
-        return str(output_path)
-        
-    finally:
-        # Clean up uploaded file - new SDK uses client
-        try:
-            client = get_gemini_client()
-            client.files.delete(uploaded_file.name)
-        except Exception:
-            # Ignore cleanup errors
-            pass

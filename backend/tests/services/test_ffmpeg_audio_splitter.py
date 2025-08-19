@@ -12,7 +12,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from backend_app.services.audio_chunker import (
+from backend_app.services.ffmpeg_audio_splitter import (
     calculate_chunk_timestamps,
     get_audio_duration_seconds,
     create_audio_chunk

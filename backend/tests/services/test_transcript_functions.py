@@ -5,13 +5,15 @@ from unittest.mock import Mock, patch
 from dataclasses import dataclass
 from typing import List
 
-from backend_app.services.chunked_diarization import (
+from backend_app.services.chunk_transcript_merger import (
     extract_timestamp_seconds,
     merge_chunk_transcripts,
-    validate_timestamps_monotonic,
-    validate_transcript_completeness,
-    create_absolute_timestamp_prompt,
-    ChunkTranscriptResult
+    remove_backwards_timestamps as validate_timestamps_monotonic,
+    validate_transcript_completeness
+)
+from backend_app.services.gemini_chunk_transcriber import (
+    create_chunk_transcript_prompt as create_absolute_timestamp_prompt,
+    TranscriptResult as ChunkTranscriptResult
 )
 from backend_app.models.audio_chunker_models import ChunkTimestamp
 

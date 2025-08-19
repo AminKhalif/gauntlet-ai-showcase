@@ -1,16 +1,28 @@
-"""Orchestrator for chunked audio transcription pipeline."""
+"""Orchestrates complete audio-to-transcript pipeline with chunking and merging.
+
+Takes: Full audio file (.mp3)
+Outputs: Final merged transcript file with speaker labels and timestamps
+Pipeline: Split audio → Transcribe chunks in parallel → Merge overlapping results
+"""
 
 import asyncio
 from pathlib import Path
 
-from backend_app.services.audio_chunker import get_audio_duration_seconds
-from backend_app.services.chunk_processor import (
+from backend_app.services.ffmpeg_audio_splitter import get_audio_duration_seconds
+from backend_app.services.audio_chunk_planner import (
     plan_audio_chunks,
     create_all_chunk_files,
     validate_chunk_files
 )
-from backend_app.services.transcript_service import transcribe_audio_chunk, TranscriptResult
-from backend_app.services.transcript_merger import process_transcript_merge
+from backend_app.services.gemini_chunk_transcriber import transcribe_audio_chunk, TranscriptResult
+from backend_app.services.chunk_transcript_merger import (
+    process_transcript_merge,
+    extract_timestamp_seconds,
+    merge_chunk_transcripts,
+    remove_backwards_timestamps as validate_timestamps_monotonic,
+    validate_transcript_completeness
+)
+from backend_app.services.gemini_chunk_transcriber import TranscriptResult as ChunkTranscriptResult
 
 
 def save_chunk_transcript(transcript_text: str, chunk_number: int, output_dir: str) -> str:

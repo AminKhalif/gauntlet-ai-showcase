@@ -1,0 +1,17 @@
+You were working with Claude to optimize an audio transcription task. The goal was to transcribe a 59-minute podcast as quickly as possible using the Gemini API.
+
+Here's what you did:
+
+Initial Test: You started by using 10 concurrent workers to process 8 audio chunks. This failed immediately due to "Empty response" errors, which you concluded were caused by hitting the Gemini API's rate limits.
+
+Second Test (7 Workers): You then tried to use 7 workers, but this also failed for the same reason.
+
+Successful Test (5 Workers): A test with 5 workers was successful, but it took 7.2 minutes to complete.
+
+Next Steps: You and Claude then discussed ways to further optimize the process. The main ideas were:
+
+Using smaller chunks: You considered splitting the audio into smaller chunks (e.g., 4-minute chunks instead of 8-minute chunks).
+
+Switching models: You discussed switching from gemini-2.5-pro to the potentially faster gemini-2.5-flash model.
+
+You were about to ask Claude to research the trade-offs between these two options when the conversation was interrupted.

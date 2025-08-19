@@ -1,13 +1,19 @@
-"""Gemini transcription service for audio chunks."""
+"""Transcribes individual audio chunks using Gemini API with absolute timestamps.
+
+Takes: Audio chunk files (.mp3) + chunk timing info (ChunkTimestamp)
+Outputs: Individual transcript files with speaker labels and timestamps  
+Used by: full_transcript_orchestrator.py for parallel chunk processing
+"""
 
 import asyncio
 from dataclasses import dataclass
 
 from backend_app.models.audio_chunker_models import ChunkTimestamp
-from backend_app.services.gemini_diarization import (
+from backend_app.services.gemini_api_client import (
     upload_audio_to_gemini,
     wait_for_file_processing,
-    get_gemini_client
+    get_gemini_client,
+    inspect_gemini_response
 )
 
 
@@ -32,15 +38,21 @@ def create_chunk_transcript_prompt(chunk_timestamp: ChunkTimestamp) -> str:
     start_mm_ss = f"{chunk_timestamp.start_seconds // 60:02d}:{chunk_timestamp.start_seconds % 60:02d}"
     end_mm_ss = f"{chunk_timestamp.end_seconds // 60:02d}:{chunk_timestamp.end_seconds % 60:02d}"
     
-    return f"""Transcribe this podcast audio with speaker labels and timestamps.
+    return f"""Transcribe ALL spoken words in this audio chunk with speaker labels and timestamps.
 
-This chunk is from {start_mm_ss} to {end_mm_ss} of the full episode.
+Audio segment: {start_mm_ss} to {end_mm_ss} of full episode.
 
-Format:
-Interviewer: [MM:SS] [text]
-Interviewee: [MM:SS] [text]
+MANDATORY REQUIREMENTS:
+1. Transcribe EVERY SINGLE SPOKEN WORD until {end_mm_ss} - do NOT stop early
+2. Transcribe ALL speech regardless of topic - conversations, questions, answers, side comments, everything
+3. Format: "Speaker: [MM:SS] exact words spoken"
+4. Use "Interviewer:" and "Interviewee:" for all lines
+5. Use absolute timestamps from full episode (starting {start_mm_ss})
+6. Continue transcribing past apparent endings like "thank you" or "goodbye"
 
-Use ABSOLUTE timestamps from the full episode (starting at {start_mm_ss}), not relative to this chunk."""
+IGNORE ONLY: background sounds, music, crying, non-speech audio
+
+CRITICAL: Your final timestamp must reach very close to {end_mm_ss}. The audio contains speech throughout the entire duration."""
 
 
 async def transcribe_audio_chunk(
@@ -81,7 +93,7 @@ async def transcribe_audio_chunk(
     for attempt in range(max_retries + 1):
         try:
             response = client.models.generate_content(
-                model="gemini-2.5-pro",
+                model="gemini-2.5-flash",
                 contents=[prompt, uploaded_file]
             )
             
@@ -94,7 +106,8 @@ async def transcribe_audio_chunk(
                 time.sleep(2 ** attempt)
                 continue
             else:
-                raise ValueError(f"Empty response from Gemini for chunk {chunk_num}")
+                diagnostics = inspect_gemini_response(response)
+                raise ValueError(f"Empty response from Gemini for chunk {chunk_num}. Details: {diagnostics}")
                 
         except Exception as e:
             if attempt < max_retries:

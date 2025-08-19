@@ -40,7 +40,12 @@ Files must be ≤ 500 lines.
 
 One responsibility per module.
 
-Top of every module: a module docstring (1–3 lines stating purpose).
+Top of every module: a clear module docstring explaining:
+- What it does specifically (not vague descriptions)
+- What it takes as input
+- What it outputs  
+- How it fits in the pipeline
+- Example: `"""Transcribes individual audio chunks using Gemini API with absolute timestamps.\n\nTakes: Audio chunk files (.mp3) + chunk timing info\nOutputs: Individual transcript files with speaker labels and timestamps\nUsed by: full_transcript_orchestrator.py for parallel chunk processing\n"""`
 
 Prefer absolute imports from backend_app.*.
 
@@ -60,6 +65,21 @@ Raise exceptions on invalid input; do not silently coerce.
 Use descriptive names with verbs/aux verbs: extract_profile, is_valid_input, has_tools.
 
 Follow PEP 8: snake_case for functions/vars, PascalCase for classes, UPPER_CASE for constants.
+
+**File Naming Convention**: Use clear, descriptive names that immediately convey purpose:
+- Services: `{tool}_{domain}_{action}.py` (e.g. `ffmpeg_audio_splitter.py`, `gemini_chunk_transcriber.py`)
+- Orchestrators: `full_{outcome}_orchestrator.py` (e.g. `full_transcript_orchestrator.py`)
+- Utilities: `{service}_api_client.py` (e.g. `gemini_api_client.py`)
+- Tests: 
+  - `test_{service_name}.py` for unit tests (fast, isolated functions with mocks)
+  - `test_{service_name}_integration.py` for integration tests (slower, real API calls, full workflows)
+- Avoid vague names like "chunked_diarization", "service", "utils" - be explicit about what the file does
+
+**Code Reuse**: Before writing new logic, check if existing modules already provide the functionality:
+- Read existing function signatures and docstrings first
+- Use existing utilities instead of reimplementing  
+- If existing code doesn't fit, extend it rather than duplicate it
+- Eliminate duplicate logic between files
 
 No print() in business logic—return values or raise; (logging can be added later).
 
