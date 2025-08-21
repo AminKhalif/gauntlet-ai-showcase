@@ -1,13 +1,16 @@
+/**
+ * @fileoverview Tool list grid showing name, category, and workflow purpose.
+ */
+
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import type { Tool } from "./types"
 import { iconMap, getCategoryColor, cn } from "./utils"
 
-export function ToolsList({
-  tools = [],
-}: {
-  tools: Tool[]
-}) {
+/**
+ * @description Displays tools as a responsive grid with category badges and purposes.
+ */
+export function ToolsList({ tools = [] }: { tools: Tool[] }) {
   return (
     <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tools.map((tool) => {

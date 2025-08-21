@@ -1,0 +1,75 @@
+Title
+
+Flowdex — Polish the Builder page: explanation-first, compact quotes, calmer density
+
+Prompt
+
+Do not redesign. Apply these targeted polish changes to the existing Builder page:
+
+1) Sub-card anatomy (each practice/rule card)
+
+Order & emphasis
+
+Title row (type badge + label + “Collapse/Expand” action).
+
+Explanation — primary content. Render as short bulleted points (2–4 bullets) instead of a paragraph when possible; otherwise a compact paragraph. Keep line length comfortable.
+
+Quotes — secondary. Render as compact list items (one line each) with truncated text and timestamp; expand to full quote on click.
+
+Artifacts — collapsed by default behind “Show artifacts (N)”.
+
+Explanation style
+
+Make it visually dominant: slightly larger than quotes; medium weight.
+
+Add a tiny label “Explanation” but keep it subtle.
+
+Quotes style (compact)
+
+Each quote is a small row: “❝ text… ❞ • 00:02:15 [Copy] [▶]”
+
+Muted color, no large block backgrounds. On expand, show full text in a light blockquote.
+
+Max 2 quotes visible; add “Show more quotes (N)” to reveal the rest.
+
+Spacing
+
+Reduce vertical padding inside the card; use tighter gaps between sections.
+
+Keep clear dividers between Explanation / Quotes / Artifacts.
+
+2) Phase card header
+
+Keep the short sentence under the phase title.
+
+Tools used in this phase stay on the right, but visually smaller (secondary). Use subtle chips.
+
+Add an optional “Expand all / Collapse all” for the practices grid within this phase.
+
+3) Density & hierarchy
+
+Reduce heading weight where it feels shouty; use one strong heading per card (phase title).
+
+Prefer sm/base body sizes with good contrast; let white space do the work, not big borders.
+
+Ensure icons/actions (Copy/Play/Collapse) are right-aligned and consistent.
+
+4) Empty/missing states
+
+If a practice has no quotes or artifacts, show unobtrusive inline notes: “No quotes captured.” / “No artifacts.”
+
+5) Accessibility
+
+Quote rows are buttons with proper labels; Enter/Space toggles expand.
+
+“Expand all” is keyboard accessible.
+
+Acceptance criteria
+
+In a practice card, your eye lands on the Explanation first; quotes are clearly secondary and compact.
+
+Two or fewer lines of quote text visible by default; deep content is behind “Show more”.
+
+Artifacts are collapsed by default.
+
+Overall card height is shorter than before for the same content.

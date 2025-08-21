@@ -1,0 +1,77 @@
+We already have a builder workflow page, but it feels like stacked text and is hard to scan. Redesign for desktop-first showcase quality. Do not change routes or add backend; mock data where needed.
+
+0) Global polish (all pages)
+
+Remove any blur overlays and heavy gradients. Use a clean, modern SaaS look.
+
+Sticky top app bar with brand Flowdex (click → /) and right-side links:
+
+Builders → / (library)
+
+How it Works → /how-it-works
+
+Add Builder (opens modal; see spec below)
+
+1) Builder workflow page /builders/[builderId]
+
+Goal: a sharp, enjoyable page that’s fast to scan but rich on expand.
+
+A. Top sticky phase nav (desktop-first)
+
+A slim bar pinned below the app header with phase anchors. Items (in this exact order):
+
+Planning & Scoping
+
+Context Management
+
+Codegen Loop
+
+Verification & Safeguards
+
+Iteration Style
+
+Deployment & Delivery
+
+Clicking a tab scrolls smoothly to the section. Scrollspy must highlight the active tab while scrolling.
+
+B. Phase groups (cards)
+
+Each phase is a distinct card group with:
+
+Title + 1-line description.
+
+Tools used in this phase (pills), aligned to the right of the header.
+
+Provide Expand all / Collapse all for the phase’s sub-cards.
+
+C. Sub-cards (practices / rules / methods)
+
+Each item is a compact card with:
+
+Small colored pill (Rule / Practice / Method) + Title.
+
+Explanation (primary): show 1–2 lines by default; expand for the full text. Slightly larger type + darker color than quotes.
+
+Quotes (secondary): small, muted, italic blockquote style with timestamp; show max 2 rows by default; “Show more quotes (N)” expands.
+
+Artifacts (tertiary): collapsed by default; on expand, show dark code panel or file/link tiles (monospace for code).
+
+Tools applied (if specific to the sub-card): tiny pills at card footer.
+
+Subtle dividers and tighter vertical rhythm — no tall, padded blocks.
+
+D. Sections that must ALWAYS render
+
+The following phases are required; do not omit even if content is mocked:
+
+Planning & Scoping
+
+Context Management
+
+Codegen Loop
+
+Verification & Safeguards (its own phase — do not merge elsewhere)
+
+Iteration Style
+
+Deployment & Delivery

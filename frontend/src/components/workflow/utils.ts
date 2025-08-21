@@ -1,10 +1,14 @@
+/**
+ * @fileoverview Shared icon mapping and styling utilities for the workflow UI.
+ */
+
 import {
   Bot,
   SquareTerminal,
   Sparkles,
   FlaskConical,
   Network,
-  Workflow,
+  WorkflowIcon,
   Code2,
   Wrench,
   Lightbulb,
@@ -18,7 +22,7 @@ export const iconMap = {
   Sparkles,
   FlaskConical,
   Network,
-  Workflow,
+  Workflow: WorkflowIcon,
   Code2,
   Wrench,
   Lightbulb,
@@ -28,6 +32,9 @@ export const iconMap = {
 
 export type IconName = keyof typeof iconMap
 
+/**
+ * @description Computes a ringed badge color style from a tool category string.
+ */
 export function getCategoryColor(category: string): string {
   const key = category.toLowerCase()
   if (key.includes("code")) return "bg-emerald-50 text-emerald-700 ring-emerald-200"
@@ -38,6 +45,9 @@ export function getCategoryColor(category: string): string {
   return "bg-zinc-50 text-zinc-700 ring-zinc-200"
 }
 
+/**
+ * @description Lightweight classnames combiner.
+ */
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ")
 }

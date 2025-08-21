@@ -1,0 +1,107 @@
+Title
+
+Flowdex — Add Top Nav + “How it Works” page, keep Library & Builder pages, apply code rules
+
+Prompt
+
+We already have two screens: the main library (builders grid) and the builder profile (workflow by phases). Enhance the product with:
+
+1) Global Top Navigation (on all pages)
+
+Brand at left: Flowdex (click → /).
+
+Right-side links:
+
+Builders (goes to / – the library page)
+
+How it Works (new page at /how-it-works)
+
+Create Profile (opens existing dialog / stub you already made)
+
+Keep it minimal, clean, and sticky on scroll. Mobile = collapsible menu.
+
+2) Library (keep existing page, just polish)
+
+Keep the current grid of builder cards.
+
+Hero:
+
+Title: AI Builder Showcase
+
+Subtitle: Real workflows from builders using AI tools. See how they actually work, phase by phase.
+
+CTA: Create Profile button (existing stub ok)
+
+Ensure cards look consistent with the builder page styling.
+
+3) Builder Profile (keep the new mini-card per practice design)
+
+Do not revert to accordions.
+
+For each phase card (Planning & Scoping, Context Management, Codegen Loop, Verification & Safeguards, Iteration Style, Deployment & Delivery):
+
+Show a short phase summary.
+
+At the top of the phase, show AI tools used in this phase as pills (e.g., for Palmer’s Planning: Grok, Perplexity).
+
+Inside the phase: sub-cards for each practice/rule.
+
+Collapsed view: practice title + small blurb.
+
+Expanded view: Explanation (clear paragraph), Quote (verbatim, subtle blockquote style), Artifacts (tags / code / links).
+
+Optional “Show more” if there are many sub-cards.
+
+Evidence drawer per phase is fine to keep.
+
+4) New page: How it Works (/how-it-works)
+
+Explain Flowdex in a way that’s easy to scan and trustworthy. No backend needed; use placeholders. Sections:
+
+What Flowdex Is
+
+One paragraph: Flowdex showcases AI-first software workflows from real builders in a consistent format so you can compare approaches fast.
+
+How the product works (pipeline)
+
+A simple 4–5 step visual/list:
+
+Paste a YouTube URL (or upload audio)
+
+Transcribe + diarize
+
+Extract per-phase practices, quotes, artifacts, and tools actually used
+
+Render a profile with phase cards and practice sub-cards
+
+Compare across builders
+
+Note: quotes are verbatim from the source; we avoid hallucinations.
+
+What you get
+
+Bulleted value props:
+
+Glanceable layout (phases → practices)
+
+Verbatim quotes for proof
+
+Tools-per-phase, not hand-wavy lists
+
+“Show evidence” drawers for deep dives
+
+Who it’s for
+
+Hiring partners (Gauntlet), founders, AI-first engineers, and students.
+
+Try it
+
+CTA: Create Profile (same dialog) and a “Browse builders” link back to /.
+
+FAQ (short)
+
+How do you handle tools mentioned vs. used?
+
+How do you avoid hallucinations?
+
+Can I edit a profile after extraction?

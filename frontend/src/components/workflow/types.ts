@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Enhanced type definitions with required phase configuration and builder structure.
+ */
+
 import type { IconName } from "./utils"
 
 export type Builder = {
@@ -15,18 +19,56 @@ export type Tool = {
   icon?: IconName
 }
 
-export type StepExample =
+export type QuoteData = {
+  id: string
+  text: string
+  timestamp: string
+  speaker?: string
+}
+
+export type PracticeData = {
+  id: string
+  type: "Rule" | "Practice"
+  title: string
+  explanation: string
+  quotes: QuoteData[]
+  artifacts: string[]
+}
+
+export type PhaseData = {
+  id: string
+  title: string
+  summary: string
+  toolsUsed: string[]
+  practices: PracticeData[]
+}
+
+export type PhaseConfig = {
+  id: string
+  title: string
+  shortName?: string
+  description: string
+  required: boolean
+}
+
+export type ExampleBlock =
   | { type: "code"; language?: string; code: string }
   | { type: "image"; src: string; alt: string }
   | { type: "quote"; text: string }
 
-export type Step = {
-  id: string
-  intent: string
-  action: string
-  tool: { id: string; name: string; category?: string; icon?: IconName }
-  example?: StepExample
-  tip?: string
+export type SectionName =
+  | "Planning & Scoping"
+  | "Context Management"
+  | "Guardrails & Validation"
+  | "Iteration Style"
+  | "Tool Stack"
+  | "Integration & Orchestration"
+  | "Deployment & Delivery"
+
+export type SectionContent = {
+  approach: string
+  examples?: ExampleBlock[]
+  tips?: string[]
 }
 
 export type ExampleOutput =
@@ -45,8 +87,28 @@ export type Workflow = {
   builder: Builder
   summary: string
   tools: Tool[]
-  steps: Step[]
+  phases: PhaseData[]
+  sections: Record<SectionName, SectionContent>
   principles: string[]
   exampleOutputs?: ExampleOutput[]
   relatedBuilders?: RelatedBuilder[]
+}
+
+// Legacy types for backward compatibility
+export type StepExample =
+  | { type: "code"; language?: string; code: string }
+  | { type: "image"; src: string; alt: string }
+  | { type: "quote"; text: string }
+
+export type Step = {
+  intent: string
+  tool: {
+    id: string
+    name: string
+    category: string
+    icon?: IconName
+  }
+  action: string
+  example?: StepExample
+  tip?: string
 }

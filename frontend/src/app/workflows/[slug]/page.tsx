@@ -1,25 +1,36 @@
+/**
+ * @fileoverview Workflow profile page rendering AI-first sections with strong visual hierarchy.
+ */
+
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { BuilderHeader } from "@/components/workflow/builder-header"
-import { ToolsList } from "@/components/workflow/tools-list"
 import { Principles } from "@/components/workflow/principles"
 import { ExampleOutputs } from "@/components/workflow/example-outputs"
 import { RelatedBuilders } from "@/components/workflow/related-builders"
-import { StepCard } from "@/components/workflow/step-card"
+import { PhaseCard } from "@/components/workflow/phase-card"
 import { Separator } from "@/components/ui/separator"
-import { WORKFLOWS } from "@/components/workflow/data"
+import { WORKFLOWS, assertHasRequiredPhases } from "@/components/workflow/data"
 
 export const metadata: Metadata = {
-  title: "AI Workflow Showcase",
+  title: "AI-first Workflow Showcase",
 }
 
+/**
+ * @description Renders a single workflow profile by slug with strict validation and clear sectioning.
+ */
 export default function WorkflowPage({
   params,
 }: {
   params: { slug: string }
 }) {
-  const workflow = WORKFLOWS[params.slug] || WORKFLOWS["jane-iterative-builder"]
-  if (!workflow) notFound()
+  const slug = params?.slug
+  const workflow = WORKFLOWS[slug]
+  if (!workflow) {
+    notFound()
+  }
+
+  assertHasRequiredPhases(workflow)
 
   return (
     <main className="min-h-screen bg-zinc-50">
@@ -38,56 +49,53 @@ export default function WorkflowPage({
             <p className="mt-3 text-zinc-600 leading-relaxed">{workflow.summary}</p>
           </section>
 
-          <section aria-labelledby="tools-heading" className="mt-10">
-            <div className="flex items-baseline justify-between gap-4">
-              <h2 id="tools-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
-                Tools Used
-              </h2>
-            </div>
-            <ToolsList tools={workflow.tools} />
-          </section>
-
           <Separator className="my-10" />
 
-          <section aria-labelledby="steps-heading" className="mt-4">
+          <section aria-labelledby="phases-heading" className="mt-4">
             <div className="mb-6">
-              <h2 id="steps-heading" className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900">
-                Step-by-Step Workflow
+              <h2 id="phases-heading" className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900">
+                How They Build with AI
               </h2>
               <p className="mt-2 text-sm text-zinc-500">
-                The core of this showcase. Scan quickly or dive into examples and tips.
+                Organized into phases with practices, quotes, and artifacts for quick scanning and deep reading.
               </p>
             </div>
 
             <div className="space-y-6">
-              {workflow.steps.map((step, idx) => (
-                <StepCard key={step.id} step={step} index={idx} />
+              {workflow.phases.map((phase) => (
+                <PhaseCard key={phase.id} phase={phase} />
               ))}
             </div>
           </section>
 
-          <section aria-labelledby="principles-heading" className="mt-12">
-            <h2 id="principles-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
-              Principles & Patterns
-            </h2>
-            <p className="mt-2 text-sm text-zinc-500">Best practices and strategies guiding this workflow.</p>
-            <Principles items={workflow.principles} />
-          </section>
+          {workflow.principles?.length ? (
+            <section aria-labelledby="principles-heading" className="mt-12">
+              <h2 id="principles-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
+                Principles & Patterns
+              </h2>
+              <p className="mt-2 text-sm text-zinc-500">Best practices guiding this workflow.</p>
+              <Principles items={workflow.principles} />
+            </section>
+          ) : null}
 
-          <section aria-labelledby="outputs-heading" className="mt-12">
-            <h2 id="outputs-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
-              Example Outputs
-            </h2>
-            <p className="mt-2 text-sm text-zinc-500">Optional screenshots, repositories, and demos.</p>
-            <ExampleOutputs items={workflow.exampleOutputs} />
-          </section>
+          {workflow.exampleOutputs?.length ? (
+            <section aria-labelledby="outputs-heading" className="mt-12">
+              <h2 id="outputs-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
+                Example Outputs
+              </h2>
+              <p className="mt-2 text-sm text-zinc-500">Optional screenshots, repositories, and demos.</p>
+              <ExampleOutputs items={workflow.exampleOutputs} />
+            </section>
+          ) : null}
 
-          <section aria-labelledby="related-heading" className="mt-12 mb-16">
-            <h2 id="related-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
-              Related Builders
-            </h2>
-            <RelatedBuilders builders={workflow.relatedBuilders} />
-          </section>
+          {workflow.relatedBuilders?.length ? (
+            <section aria-labelledby="related-heading" className="mt-12 mb-16">
+              <h2 id="related-heading" className="text-lg font-semibold tracking-tight text-zinc-900">
+                Related Builders
+              </h2>
+              <RelatedBuilders builders={workflow.relatedBuilders} />
+            </section>
+          ) : null}
         </div>
       </div>
     </main>
