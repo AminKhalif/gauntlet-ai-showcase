@@ -27,7 +27,14 @@ Tests section:
   - tests/models/test_*.py for model tests  
   - tests/api/test_*.py for API tests
 
-  NEVER create test files in the root directory or anywhere outside tes
+  NEVER create test files in the root directory or anywhere outside tests/
+
+  Test format requirements:
+  - ALL tests use pytest format (import pytest, use test_* functions, use assert statements)
+  - NO if __name__ == "__main__": blocks in test files
+  - NO print() statements for test output (pytest handles output)
+  - Run tests with: `uv run pytest tests/path/to/test_file.py -v`
+  - NEVER write standalone scripts that aren't pytest-compatible
 
 Do not touch _docs/ or frontend/.
 
