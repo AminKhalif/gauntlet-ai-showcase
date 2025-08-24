@@ -1,36 +1,83 @@
-NOTE: This is an example of a project overview. It is not a real project.
-For the sake of demonstration, this document is very sparse, to show how little you need to get started.
-The more detailed your project overview is, the less gaps the AI will need to fill, and the better your docs (and your project) will be.
+Chat Summary: Frontend Analysis & AI-First Rules
 
-# Project Overview
+  What We Accomplished
 
-This project is a speed build challenge to build a fully functional Grammarly clone, then enhance it with advanced AI-driven features that surpass existing writing tools. The goal is to leverage modern AI development tools and methodologies throughout the process.
+  Analyzed your frontend codebase:
+  - Next.js 15 + TypeScript + shadcn/ui + Tailwind
+  - Well-organized structure: app/ (routes), components/ (UI), hooks/, lib/
+  - Currently uses mock data from components/workflow/data.ts
+  - Some tight coupling issues but generally clean architecture
 
----
+  Created AI-first ruleset files in frontend/_agent_docs/:
+  - theme-ui-rules.md - Zinc-based styling guidelines to prevent random colors
+  - code-rules.md - TypeScript/React rules with GPT-5 feedback, AI-compatible patterns
+  - user-flow.md - Navigation and interaction patterns
 
-## Phase 1: Core Clone
+  Key rules prevent your previous problems:
+  - Files under 500 lines, proper TypeScript types
+  - Consistent zinc color system (text-zinc-900, bg-white, etc.)
+  - Server Components by default, proper file naming (useThing.ts)
+  - Quality gates: npm run lint, npm run typecheck must pass
 
-Develop a complete writing assistant with the following essential features:
+  Current Task: Connect Backend + Frontend
 
-- **Real-time grammar and spell checking**
-- **Basic style suggestions and readability analysis**
-- **Clean, responsive text editor interface**
-- **User authentication and document management**
-- **Core functionality matching Grammarly’s base experience**
+  Problem: Backend and frontend are completely siloed. Add Builder modal doesn't work end-to-end.
 
----
+  Goal: Full workflow from Add Builder → Display Builder Profile
+  1. User submits Add Builder modal (name + YouTube URL)
+  2. Store builder in database
+  3. Trigger your diarization pipeline
+  4. Render formatted content from your LangExtract Pydantic models
+  5. Builder profile displays nicely on /builders/[slug] page
 
-## Phase 2: AI Enhancement
+  Architecture Questions:
+  - Should YouTube MP3 be downloaded to GCS bucket with Supabase storing the URL?
+  - Start with API routes first?
+  - How to structure the data flow between your existing backend services and frontend?
 
-Elevate the clone by integrating advanced AI features tailored to a specific niche:
+  Your Backend Services Ready:
+  - YouTube downloader
+  - Audio chunking + transcription (Gemini)
+  - AssemblyAI diarization
+  - LangExtract workflow extraction
+  - Supabase + GCS storage
 
-- **Context-aware suggestions powered by large language models**
-- **Personalized writing recommendations based on user goals**
-- **Advanced style analysis beyond rule-based corrections**
-- **Intelligent content generation and improvement suggestions**
+  Current Frontend:
+  - Add Builder modal (form validation working)
+  - Builder display pages (using mock data)
+  - Clean component structure ready for real data
 
----
+  Next Steps to Consider:
+  - Create Next.js API routes to interface with your Python backend
+  - Design data flow: Frontend → API → Python services → Database → Frontend
+  - Decide on async processing (how long does full pipeline take?)
+  - Update frontend components to consume real API data instead of mock data
+---------------------------------------------------------------------------------------------
 
-## Ultimate Goal
 
-Deliver a next-generation writing assistant that demonstrates how AI-first principles and modern language models can revolutionize writing assistance—surpassing the capabilities of traditional tools like Grammarly.
+
+
+
+  Incremental Steps (My Professional Recommendation)
+
+  Step 1: Database + Mock API (1-2 days)
+  Build: Supabase schema + Next.js API routes
+  Test: Modal creates builder record, shows "processing" page
+  Risk: Low - no external APIs
+
+  Step 2: Static Builder Pages (1 day)
+  Build: Builder profile pages with fake workflow data
+  Test: Full user flow works (create → processing → profile)
+  Risk: Low - just UI work
+
+  Step 3: One Real Service Integration (1 day)
+  Build: JUST YouTube downloader → GCS storage
+  Test: Can download 1 video, store metadata in Supabase
+  Risk: Medium - first real API integration
+
+  Step 4: Add Processing Pipeline (2-3 days)
+  Build: Connect existing transcription/extraction services
+  Test: Full pipeline with 1 test video
+  Risk: High - multiple moving parts
+
+  Where I Think You Might Get Stuck

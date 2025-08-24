@@ -1,4 +1,4 @@
-"""Creates high-quality training examples for AI workflow extraction.
+"""Creates high-quality training examples for AI workflow extraction, Langextract requires high quality examples.
 
 Takes: Palmer's transcript snippets + expected workflow outputs
 Outputs: langextract.data.ExampleData objects for few-shot learning
