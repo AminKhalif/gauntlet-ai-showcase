@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "assemblyai>=0.43.1",
+    "fastapi>=0.116.1",
     "google-cloud-storage>=3.3.0",
     "google-genai>=1.30.0",
     "langextract>=1.0.8",
@@ -13,6 +14,7 @@ dependencies = [
     "pytest>=8.4.1",
     "python-dotenv>=1.1.1",
     "supabase>=2.18.0",
+    "uvicorn>=0.35.0",
     "yt-dlp>=2025.8.11",
 ]
 
