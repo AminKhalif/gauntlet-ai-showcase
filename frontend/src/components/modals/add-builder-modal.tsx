@@ -77,15 +77,40 @@ export function AddBuilderModal({ isOpen, onClose }: AddBuilderModalProps) {
 
     setIsSubmitting(true)
 
-    // Mock submission - replace with actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch("/api/builders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          youtubeUrl: formData.youtubeUrl,
+        }),
+      })
 
-    setIsSubmitting(false)
-    onClose()
+      const result = await response.json()
 
-    // Reset form
-    setFormData({ firstName: "", lastName: "", youtubeUrl: "" })
-    setErrors({})
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to create builder")
+      }
+
+      // Success - close modal and reset form
+      onClose()
+      setFormData({ firstName: "", lastName: "", youtubeUrl: "" })
+      setErrors({})
+
+    } catch (error) {
+      console.error("Failed to create builder:", error)
+      
+      // Show error message to user
+      setErrors({
+        youtubeUrl: error instanceof Error ? error.message : "Failed to create builder. Please try again."
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleInputChange = (field: keyof FormData, value: string) => {
